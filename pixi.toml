@@ -1,0 +1,18 @@
+[workspace]
+authors = ["phillc54 <353205594+phillc54@users.noreply.github.com>"]
+channels = ["conda-forge"]
+name = "dxf2plasmac_emedded"
+platforms = ["osx-arm64"]
+version = "0.1.0"
+
+[tasks]
+
+[dependencies]
+python = "3.11.2.*"
+typing_extensions = ">=4.16.0,<5"
+pyqt = ">=5.15,<6"
+ezdxf = ">=1.4"
+
+[pypi-dependencies]
+shapely = ">=2.0, <2.2"
+pyqt5-stubs = ">=5.15.6.0, <6"

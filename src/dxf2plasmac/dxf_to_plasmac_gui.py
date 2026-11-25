@@ -465,7 +465,7 @@ class dxfGui(QFrame):
                             item.setFlag(QGraphicsItem.ItemIsSelectable, True)
                         self.scene.addItem(item)
                     # tag all segments
-                    item.setData(TAG_LAYER, f' {layer}')
+                    item.setData(TAG_LAYER, layer)#f' {layer}')
                     item.setData(TAG_MODE, mode)
                     item.setData(TAG_SEQUENCE, str(seq))
                     item.setData(TAG_SEGMENT, str(line['seg']))
@@ -481,7 +481,7 @@ class dxfGui(QFrame):
 #       it may be worthwhile making a tag dict rather
 #       than iterating through every item in the scene
         layer_boxes = self.layer_group.findChildren(QCheckBox)
-        hide_layers = [cb.text() for cb in layer_boxes if not cb.isChecked()]
+        hide_layers = [cb.text().strip() for cb in layer_boxes if not cb.isChecked()]
         hide_types = []
         if not self.show_rapids.isChecked(): hide_types.append('rapid')
         if not self.show_lead_ins.isChecked(): hide_types.append('lead-in')

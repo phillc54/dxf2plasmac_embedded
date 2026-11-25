@@ -1,8 +1,4 @@
 __pycache__/
-standalone.py
-test/
 .pixi/
-.zed/
-!.pixi/config.toml
-pixi.*
+pixi.lock
 .gitattributes
