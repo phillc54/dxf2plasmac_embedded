@@ -68,11 +68,11 @@ if hasattr(self.w, 'main_tab_widget'):
         # set up the disabling hal pin
         # not sure why I added these after all the work to add the tab
         # but it makes the tab consistant with conversational
-        self.dxfTabDisable = self.h.newpin('dxf_disable', HAL.HAL_BIT, HAL.HAL_IN)
+        # self.dxfTabDisable = self.h.newpin('dxf_disable', HAL.HAL_BIT, HAL.HAL_IN)
+        self.dxfTabDisable = self.h.newpin('dxf_disable', HAL.HAL_BOOL, HAL.HAL_IN)
         self.dxfTabDisable.value_changed.connect(lambda v: self.w.main_tab_widget.setTabVisible(self.DXF_CONVERTER, not v))
 
-
-        # monkey patched methods from the handler file
+        # patch handler file main_tab_changed method so the dxf2plasmac tab gets processed
         old_main_tab_changed = self.main_tab_changed
         def main_tab_changed(tab):
             old_main_tab_changed(tab)
@@ -81,9 +81,15 @@ if hasattr(self.w, 'main_tab_widget'):
                 self.autorepeat_keys(True)
         self.main_tab_changed = main_tab_changed
 
-        old_set_tab_jog_states = self.set_tab_jog_states
-        def set_tab_jog_states(state):
-            old_set_tab_jog_states(state)
-            if not HANDLER.STATUS.is_auto_paused() and self.tabsAlwaysEnabled.get():
-                self.w.main_tab_widget.setTabEnabled(self.DXF_CONVERTER, state)
-        self.set_tab_jog_states = set_tab_jog_states
+        # add c to index-name map for interlock rules
+        self.tabNames[self.DXF_CONVERTER] = 'dxf_converter_tab'
+        # add dxf2plasmac tab to interlock rules
+        HANDLER.INTERLOCK_RULES['dxf_converter_tab'] = {
+            'all': {
+                'interp_idle': True,
+                'manual_cut_active': False,
+                'offsets_active': False,
+                'probe_test': False
+            }
+        }
+        self.interlockRules = HANDLER.INTERLOCK_RULES.copy()

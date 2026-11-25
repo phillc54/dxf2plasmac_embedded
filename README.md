@@ -14,7 +14,7 @@ There are two python libraries required, ezdxf and shapely.
 Bookworm requires these from PyPi as the debian packages are too old.
 
     pip3 install "ezdxf>=1.4" --break-system-packages
-    pip3 install "shapely>=2.0<2.2" --break-system-packages
+    pip3 install "shapely>=2.0<2.2" --break-system-packages --no-deps
 
 Trixie can use the debian packages (NOTE: untested as of uploading this repo)
 
