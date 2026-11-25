@@ -98,7 +98,7 @@ class Canvas(QGraphicsView):
             rect.adjust(-pad, -pad, pad, pad)
             self.fitInView(rect, Qt.KeepAspectRatio)
 
-    def zoom_step(self, factor: float, anchor_pos=None):
+    def zoom_step(self, factor, anchor_pos=None):
         ''' zoom  by mouse wheel or button steps'''
         if anchor_pos is None:
             anchor_pos = self.viewport().rect().center()
@@ -108,10 +108,10 @@ class Canvas(QGraphicsView):
         delta = new_pos - old_pos
         self.translate(delta.x(), delta.y())
 
-    def pan_step(self, dx: float, dy: float):
+    def pan_step(self, x, y):
         ''' pan by right mouse drag or buttons'''
         scale = self.transform().m11()
-        self.translate(dx / scale, dy / scale)
+        self.translate(x / scale, y / scale)
 
     @override
     def wheelEvent(self, event):
@@ -230,6 +230,7 @@ class dxfGui(QFrame):
         self.icon_path = get_asset_path(os.path.join('assets', 'icons'))
         self.current_path = ''
         self.new_file = ''
+        self.gcode_file = ''
         self.selected_item = ''
         self.cross_marker = None
         self.shape_color = Qt.black
@@ -268,7 +269,7 @@ class dxfGui(QFrame):
             self.status.setText(f'dxf file: {Path(file).name}     Size: {self.D2P.size[0]}{post} x {self.D2P.size[1]}{post}')
             self.do_plot()
 
-    def export_gcode(self, _event):
+    def export_gcode(self):
         ''' write gcode to a file '''
         path = os.path.join(self.current_path, Path(self.D2P.loaded_file).stem)
         file, _ = QFileDialog.getSaveFileName(
@@ -277,11 +278,12 @@ class dxfGui(QFrame):
                 f'{path}.ngc',
                 filter='GCode File (*.ngc);;Any File (*)')
         if file:
+            self.gcode_file = file
             QApplication.setOverrideCursor(Qt.BusyCursor)
             self.D2P.write_gcode(file)
             self.error_check()
 
-    def reload(self, _event):
+    def reload(self):
         ''' reload current file or project '''
         QApplication.setOverrideCursor(Qt.BusyCursor)
         self.show_rapids.setChecked(True)
@@ -294,7 +296,7 @@ class dxfGui(QFrame):
         # self.new_file = True # if we want to zoom all after reload
         self.do_plot()
 
-    def open_project(self, _event):
+    def open_project(self):
         ''' open a saved project '''
         file, _ = QFileDialog.getOpenFileName(
                 self,
@@ -319,7 +321,7 @@ class dxfGui(QFrame):
             self.status.setText(f'project file: {Path(file).name}     Size: {self.D2P.size[0]}{post} x {self.D2P.size[1]}{post}')
             self.do_plot()
 
-    def save_project(self, _event):
+    def save_project(self):
         ''' save job as a project '''
         path = os.path.join(self.current_path, Path(self.D2P.loaded_file).stem)
         file, _ = QFileDialog.getSaveFileName(
@@ -333,7 +335,7 @@ class dxfGui(QFrame):
             self.D2P.save_project(file)
             self.error_check()
 
-    def show_about(self, _event):
+    def show_about(self):
         title = f'dxf2PlasmaC\n\nVersion: {VERSION}'
         message = ('A basic converter from dxf to QtPlasmaC G-code'
                    '\n'
@@ -661,6 +663,7 @@ class dxfGui(QFrame):
         menu.setWindowFlags(Qt.Dialog | Qt.FramelessWindowHint)
         menu.setWindowModality(Qt.ApplicationModal)
         menu.setFixedWidth(self.menu_width)
+        menu.setStyleSheet("QMenu{padding: 0px 0px} QMenu::item{padding: 8px 4px; margin: 0px}")
         title_label = QLabel(title)
         title_label.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
         title_action = QWidgetAction(menu)

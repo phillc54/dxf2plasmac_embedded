@@ -6,7 +6,7 @@
 
     Bookworm requires these from PyPi as the debian packages are too old:
         pip3 install "ezdxf>=1.4" --break-system-packages
-        pip3 install "shapely>=2.0<2.2" --break-system-packages
+        pip3 install "shapely>=2.0<2.2" --break-system-packages --no-deps
     Trixie can use the debian packages (NOTE: untested so far)
         sudo apt install python3-ezdxf python3-shapely
 '''
@@ -58,17 +58,16 @@ if hasattr(self.w, 'main_tab_widget'):
         self.dxf_gui.D2P.gap_tolerance = 0.001
         self.dxf_gui.D2P.lead_angle = 45
         self.dxf_gui.D2P.precision = 2
+        self.dxf_gui.shape_color = '#808000'
         # tickle conversational so we can get the small hole diameter
         self.CONV.conv_setup(self, self.w)
         self.dxf_gui.D2P.small_hole = self.PREFS.getpref('Hole diameter', self.unitCode[2], float, 'CONVERSATIONAL')
-        self.dxf_gui.shape_color = '#808000'
-        # widen these two as QtPlasmaC styles make the contained widgets quite a bit larger than standard
+        # widen these two as QtPlasmaC styles make the child widgets quite a bit larger than standard
         self.dxf_gui.sidebar_container.setFixedWidth(220)
         self.dxf_gui.menu_width = 220
         # set up the disabling hal pin
         # not sure why I added these after all the work to add the tab
         # but it makes the tab consistant with conversational
-        # self.dxfTabDisable = self.h.newpin('dxf_disable', HAL.HAL_BIT, HAL.HAL_IN)
         self.dxfTabDisable = self.h.newpin('dxf_disable', HAL.HAL_BOOL, HAL.HAL_IN)
         self.dxfTabDisable.value_changed.connect(lambda v: self.w.main_tab_widget.setTabVisible(self.DXF_CONVERTER, not v))
 
@@ -80,8 +79,10 @@ if hasattr(self.w, 'main_tab_widget'):
                 self.vkb_show(True)
                 self.autorepeat_keys(True)
         self.main_tab_changed = main_tab_changed
+        # show main page
+        self.w.main_tab_widget.setCurrentIndex(self.MAIN)
 
-        # add c to index-name map for interlock rules
+        # add dxf2plasmac to index-name map for interlock rules
         self.tabNames[self.DXF_CONVERTER] = 'dxf_converter_tab'
         # add dxf2plasmac tab to interlock rules
         HANDLER.INTERLOCK_RULES['dxf_converter_tab'] = {
@@ -93,3 +94,13 @@ if hasattr(self.w, 'main_tab_widget'):
             }
         }
         self.interlockRules = HANDLER.INTERLOCK_RULES.copy()
+
+        # load gcode file in linuxcnc after saving
+        def export_gcode():
+            self.dxf_gui.export_gcode()
+            self.new_load(self.dxf_gui.gcode_file)
+
+        export_btn = self.dxf_gui.toolbar.itemAt(1).widget()
+        export_btn.clicked.disconnect()
+        export_btn.clicked.connect(export_gcode)
+        export_btn.setToolTip('Export Gcode file and open in LinuxCNC')
