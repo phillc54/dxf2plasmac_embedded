@@ -1,7 +1,7 @@
 # dxf2plasmac_embedded
 A basic converter from dxf to gcode embedded in a QtPlasmaC tab.
 
-Copy add_dxf2plasmac.py and the dxf2plasmac directory into your QtPlasmaC directory.
+Copy add_dxf2plasmac.py and the dxf2plasmac directory from the src directory into your QtPlasmaC directory.
 
 Edit the existing inifile by adding the following to the [DISPLAY] section:
 
@@ -19,5 +19,3 @@ Bookworm requires these from PyPi as the debian packages are too old.
 Trixie can use the debian packages (NOTE: untested as of uploading this repo)
 
     sudo apt install python3-ezdxf python3-shapely
-
-
