@@ -18,8 +18,8 @@ from PyQt5.QtGui import (
     QPainter,
     QPainterPath,
     QPainterPathStroker,
-    QPixmap,
     QPen,
+    QPixmap,
 )
 from PyQt5.QtWidgets import (
     QAction,
@@ -465,7 +465,7 @@ class dxfGui(QFrame):
                             item.setFlag(QGraphicsItem.ItemIsSelectable, True)
                         self.scene.addItem(item)
                     # tag all segments
-                    item.setData(TAG_LAYER, layer)
+                    item.setData(TAG_LAYER, f' {layer}')
                     item.setData(TAG_MODE, mode)
                     item.setData(TAG_SEQUENCE, str(seq))
                     item.setData(TAG_SEGMENT, str(line['seg']))
@@ -493,9 +493,9 @@ class dxfGui(QFrame):
             item.setVisible(True)
             if isinstance(item, QGraphicsPathItem):
                 if hide_layers and item.data(TAG_LAYER) in hide_layers:
-                        item.setVisible(False)
+                    item.setVisible(False)
                 if hide_types and item.data(TAG_TYPE) in hide_types:
-                        item.setVisible(False)
+                    item.setVisible(False)
 
     def toggle_layer_visibility(self, state, layer):
         ''' show/hide layers by name '''
