@@ -20,3 +20,5 @@ If you are using Debian Trixie then you could use the versions that install via 
 
     sudo apt install python3-ezdxf
     sudo apt install python3-shapely
+
+![Screenshot](images/dxf2plasmac.png)
