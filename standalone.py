@@ -67,7 +67,7 @@ class MainWindow(QMainWindow):
 
     def example(self):
 #         self.dxf_gui.hide()
-        self.quit()
+        self.close()
 #
 #     @override
 #     def mousePressEvent(self, a0):
