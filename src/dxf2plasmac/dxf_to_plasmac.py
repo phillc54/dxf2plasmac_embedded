@@ -130,7 +130,6 @@ class dxf2PlasmaC:
 # path gathering ##############################################################
     def _get_paths(self, ):
         ''' load a dxf file, convert entities to paths, and build cut sequences '''
-        self.layers = [layer.dxf.name for layer in self.doc.layers if layer.dxf.name != 'Defpoints']
         self._dxf_to_paths()
         for layer in self.layers:
             self.sequences[layer] = {'cut': [], 'start': {}, 'external': {}, 'lead-in': {},}
@@ -149,15 +148,21 @@ class dxf2PlasmaC:
 
     def _dxf_to_paths(self):
         ''' scale geometry, centre at origin, and chain entities into paths '''
-        scale = 1
-        mu = self.doc.header.get('$MEASUREMENT', None)
-        iu = self.doc.header.get('$INSUNITS', None)
-        # metric dxf
-        if mu == 1 or iu in [4, 5, 6, 7, 12, 13, 14, 15, 16]:
-            scale = 1 / 25.4 if self.units == 'imperial' else 1
-        # imperial DXF
-        elif mu == 0 or iu in [1, 2, 3, 8, 9, 10]:
-            scale = 1 if self.units == 'imperial' else 25.4
+        # attempt scaling the dxf file
+        # check for inches, feet, millimeters, centimeters, and meters
+        # surely no other units for a plasma cut drawing 🤷‍♂️
+        scales_m = {4: 1, 5: 10, 6: 1000}
+        scales_i = {1: 1, 2: 12}
+        u = self.doc.units
+        # probably a metric dxf
+        if u in [4, 5, 6]:
+            scale = scales_m[u] / 25.4 if self.units == 'imperial' else scales_m[u]
+        # probably a imperial DXF
+        elif u in [1, 2]:
+            scale = scales_i[u] if self.units == 'imperial' else 25.4 * scales_i[u]
+        # unknown so scale is 1
+        else:
+           scale = 1
         # rescale if required
         if scale != 1:
             matrix = Matrix44.scale(scale)
@@ -173,12 +178,18 @@ class dxf2PlasmaC:
         for block in self.doc.blocks:
             if not block.is_any_paperspace:
                 transform.inplace(block, matrix)
-        # get entities
+        # reload modelspace after scaling
         msp = self.doc.modelspace()
+        # build a list of layers containing valid entities
         entities_by_layer = groupby(
             entities=msp.query('LINE SPLINE LWPOLYLINE POLYLINE ARC CIRCLE'),
             dxfattrib='layer',
         )
+        for layer in self.doc.layers:
+            layer_name = layer.dxf.name
+            layer_entities = entities_by_layer.get(layer_name, [])
+            if layer_entities:
+                self.layers.append(layer_name)
         # store entities by layer
         for layer in self.layers:
             self.paths[layer] = {}
@@ -224,6 +235,9 @@ class dxf2PlasmaC:
                                 path = entity_path
                             else:
                                 path.append_path(entity_path)
+                    # close the path if it is closer than gap_tolerance and not closed
+                    if path.start.isclose(path.end, abs_tol=self.gap_tolerance) and not path.is_closed:
+                        path.close()
                     self.paths[layer][n] = path
             # process circles
             start = len(self.paths[layer]) - 1
