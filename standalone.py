@@ -27,7 +27,7 @@ class MainWindow(QMainWindow):
         self.layout.setContentsMargins(0, 0, 0, 0)
         self.layout.setSpacing(0)
 
-        self.dxf_gui = dxfGui('metric')
+        self.dxf_gui = dxfGui('metric', '#004080')
         self.layout.addWidget(self.dxf_gui)
         self.dxf_gui.D2P.lead_type = 'arc'
         self.dxf_gui.D2P.lead_length = 3.0

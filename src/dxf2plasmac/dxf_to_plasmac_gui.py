@@ -222,7 +222,7 @@ class OutlineCutPath(OutlinePath):
 
 
 class dxfGui(QFrame):
-    def __init__(self, units='metric', icon_color=Qt.black):
+    def __init__(self, units='metric', icon_color='#000000'):
         super().__init__()
         self.scene = QGraphicsScene(-5000, -5000, 10000, 10000)
         self.scene.selectionChanged.connect(self.item_selection_changed)
@@ -735,13 +735,10 @@ class dxfGui(QFrame):
         else:
             self.selected_item = ''
 
-    def colorize_icon(self, image_path: str, color: str | QColor) -> QIcon:
-        pixmap = QPixmap(image_path)
-
-        # Initialize QPainter on the pixmap
+    def colorize_icon(self, image, color):
+        path = os.path.join(self.icon_path, image)
+        pixmap = QPixmap(path)
         painter = QPainter(pixmap)
-        # SourceIn keeps the alpha (transparency) of the destination (the PNG)
-        # and applies the color of the source (the painter)
         painter.setCompositionMode(QPainter.CompositionMode_SourceIn)
         painter.fillRect(pixmap.rect(), QColor(color))
         painter.end()
@@ -764,7 +761,7 @@ class dxfGui(QFrame):
         # file
         btn_import_dxf = QToolButton()
         btn_import_dxf.setFixedSize(QSize(icon_size, icon_size))
-        btn_import_dxf.setIcon(self.colorize_icon(os.path.join(self.icon_path, 'import_dxf.png'), QColor(self.icon_color)))
+        btn_import_dxf.setIcon(self.colorize_icon('import_dxf.png', QColor(self.icon_color)))
         btn_import_dxf.setIconSize(QSize(icon_size, icon_size))
         btn_import_dxf.setAutoRaise(True)
         btn_import_dxf.setToolTip('Import DXF file')
@@ -772,7 +769,7 @@ class dxfGui(QFrame):
         self.toolbar.addWidget(btn_import_dxf)
         btn_export_gcode = QToolButton()
         btn_export_gcode.setFixedSize(QSize(icon_size, icon_size))
-        btn_export_gcode.setIcon(self.colorize_icon(os.path.join(self.icon_path, 'export_gcode.png'), QColor(self.icon_color)))
+        btn_export_gcode.setIcon(self.colorize_icon('export_gcode.png', QColor(self.icon_color)))
         btn_export_gcode.setIconSize(QSize(icon_size, icon_size))
         btn_export_gcode.setToolTip('Export Gcode file')
         btn_export_gcode.clicked.connect(self.export_gcode)
@@ -781,7 +778,7 @@ class dxfGui(QFrame):
         # reload
         btn_reload = QToolButton()
         btn_reload.setFixedSize(QSize(icon_size, icon_size))
-        btn_reload.setIcon(self.colorize_icon(os.path.join(self.icon_path, 'reload.png'), QColor(self.icon_color)))
+        btn_reload.setIcon(self.colorize_icon('reload.png', QColor(self.icon_color)))
         btn_reload.setIconSize(QSize(icon_size, icon_size))
         btn_reload.setToolTip('Reload DXF file or project')
         btn_reload.clicked.connect(self.reload)
@@ -790,14 +787,14 @@ class dxfGui(QFrame):
         # project
         btn_open_project = QToolButton()
         btn_open_project.setFixedSize(QSize(icon_size, icon_size))
-        btn_open_project.setIcon(self.colorize_icon(os.path.join(self.icon_path, 'open_project.png'), QColor(self.icon_color)))
+        btn_open_project.setIcon(self.colorize_icon('open_project.png', QColor(self.icon_color)))
         btn_open_project.setIconSize(QSize(icon_size, icon_size))
         btn_open_project.setToolTip('Open a saved project')
         btn_open_project.clicked.connect(self.open_project)
         self.toolbar.addWidget(btn_open_project)
         btn_save_project = QToolButton()
         btn_save_project.setFixedSize(QSize(icon_size, icon_size))
-        btn_save_project.setIcon(self.colorize_icon(os.path.join(self.icon_path, 'save_project.png'), QColor(self.icon_color)))
+        btn_save_project.setIcon(self.colorize_icon('save_project.png', QColor(self.icon_color)))
         btn_save_project.setIconSize(QSize(icon_size, icon_size))
         btn_save_project.setToolTip('Save a project')
         btn_save_project.clicked.connect(self.save_project)
@@ -806,7 +803,7 @@ class dxfGui(QFrame):
         # settings
         # btn_settings = QToolButton()
         # btn_settings.setFixedSize(QSize(icon_size, icon_size))
-        # btn_settings.setIcon(self.colorize_icon(os.path.join(self.icon_path, 'settings.png'), QColor(self.icon_color)))
+        # btn_settings.setIcon(self.colorize_icon('settings.png', QColor(self.icon_color)))
         # btn_settings.setIconSize(QSize(icon_size, icon_size))
         # btn_settings.setToolTip('Settings')
         # self.toolbar.addWidget(btn_settings)
@@ -814,7 +811,7 @@ class dxfGui(QFrame):
         # info
         btn_info = QToolButton()
         btn_info.setFixedSize(QSize(icon_size, icon_size))
-        btn_info.setIcon(self.colorize_icon(os.path.join(self.icon_path, 'info.png'), QColor(self.icon_color)))
+        btn_info.setIcon(self.colorize_icon('info.png', QColor(self.icon_color)))
         btn_info.setIconSize(QSize(icon_size, icon_size))
         btn_info.setToolTip('Information')
         btn_info.clicked.connect(self.show_about)
@@ -823,7 +820,7 @@ class dxfGui(QFrame):
         # zoom
         btn_zoom_all = QToolButton()
         btn_zoom_all.setFixedSize(QSize(icon_size, icon_size))
-        btn_zoom_all.setIcon(self.colorize_icon(os.path.join(self.icon_path, 'zoom_all.png'), QColor(self.icon_color)))
+        btn_zoom_all.setIcon(self.colorize_icon('zoom_all.png', QColor(self.icon_color)))
         btn_zoom_all.setIconSize(QSize(icon_size, icon_size))
         btn_zoom_all.clicked.connect(self.canvas.zoom_all)
         btn_zoom_all.setToolTip('Zoom to fit')
@@ -831,14 +828,14 @@ class dxfGui(QFrame):
         self.toolbar.addSpacing(spacing)
         btn_zoom_in = QToolButton()
         btn_zoom_in.setFixedSize(QSize(icon_size, icon_size))
-        btn_zoom_in.setIcon(self.colorize_icon(os.path.join(self.icon_path, 'zoom_in.png'), QColor(self.icon_color)))
+        btn_zoom_in.setIcon(self.colorize_icon('zoom_in.png', QColor(self.icon_color)))
         btn_zoom_in.setIconSize(QSize(icon_size, icon_size))
         btn_zoom_in.clicked.connect(lambda: self.canvas.zoom_step(1.25))
         btn_zoom_in.setToolTip('Zoom in')
         self.toolbar.addWidget(btn_zoom_in)
         btn_zoom_out = QToolButton()
         btn_zoom_out.setFixedSize(QSize(icon_size, icon_size))
-        btn_zoom_out.setIcon(self.colorize_icon(os.path.join(self.icon_path, 'zoom_out.png'), QColor(self.icon_color)))
+        btn_zoom_out.setIcon(self.colorize_icon('zoom_out.png', QColor(self.icon_color)))
         btn_zoom_out.setIconSize(QSize(icon_size, icon_size))
         btn_zoom_out.clicked.connect(lambda: self.canvas.zoom_step(0.8))
         btn_zoom_out.setToolTip('Zoom out')
@@ -847,28 +844,28 @@ class dxfGui(QFrame):
         # pan
         btn_pan_left = QToolButton()
         btn_pan_left.setFixedSize(QSize(icon_size, icon_size))
-        btn_pan_left.setIcon(self.colorize_icon(os.path.join(self.icon_path, 'pan_left.png'), QColor(self.icon_color)))
+        btn_pan_left.setIcon(self.colorize_icon('pan_left.png', QColor(self.icon_color)))
         btn_pan_left.setIconSize(QSize(icon_size, icon_size))
         btn_pan_left.clicked.connect(lambda: self.canvas.pan_step(pan_step, 0))
         btn_pan_left.setToolTip('Pan left')
         self.toolbar.addWidget(btn_pan_left)
         btn_pan_right = QToolButton()
         btn_pan_right.setFixedSize(QSize(icon_size, icon_size))
-        btn_pan_right.setIcon(self.colorize_icon(os.path.join(self.icon_path, 'pan_right.png'), QColor(self.icon_color)))
+        btn_pan_right.setIcon(self.colorize_icon('pan_right.png', QColor(self.icon_color)))
         btn_pan_right.setIconSize(QSize(icon_size, icon_size))
         btn_pan_right.clicked.connect(lambda: self.canvas.pan_step(-pan_step, 0))
         btn_pan_right.setToolTip('Pan right')
         self.toolbar.addWidget(btn_pan_right)
         btn_pan_up = QToolButton()
         btn_pan_up.setFixedSize(QSize(icon_size, icon_size))
-        btn_pan_up.setIcon(self.colorize_icon(os.path.join(self.icon_path, 'pan_up.png'), QColor(self.icon_color)))
+        btn_pan_up.setIcon(self.colorize_icon('pan_up.png', QColor(self.icon_color)))
         btn_pan_up.setIconSize(QSize(icon_size, icon_size))
         btn_pan_up.clicked.connect(lambda: self.canvas.pan_step(0, pan_step))
         btn_pan_up.setToolTip('Pan up')
         self.toolbar.addWidget(btn_pan_up)
         btn_pan_down = QToolButton()
         btn_pan_down.setFixedSize(QSize(icon_size, icon_size))
-        btn_pan_down.setIcon(self.colorize_icon(os.path.join(self.icon_path, 'pan_down.png'), QColor(self.icon_color)))
+        btn_pan_down.setIcon(self.colorize_icon('pan_down.png', QColor(self.icon_color)))
         btn_pan_down.setIconSize(QSize(icon_size, icon_size))
         btn_pan_down.clicked.connect(lambda: self.canvas.pan_step(0, -pan_step))
         btn_pan_down.setToolTip('Pan down')
