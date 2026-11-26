@@ -1,10 +1,13 @@
 import math
 import pickle
 from datetime import datetime
+from itertools import chain as ichain
 from pathlib import Path
 from typing import cast
 
 from ezdxf import bbox, edgeminer, edgesmith, transform
+from ezdxf.addons import text2path
+from ezdxf.addons.mtxpl import MTextExplode
 from ezdxf.entities.lwpolyline import LWPolyline
 from ezdxf.entities.polyline import Polyline
 from ezdxf.filemanagement import readfile
@@ -180,9 +183,22 @@ class dxf2PlasmaC:
                 transform.inplace(block, matrix)
         # reload modelspace after scaling
         msp = self.doc.modelspace()
+        # explode MTEXT into TEXT
+        with MTextExplode(msp) as xpl:
+            for mtext in list(msp.query("MTEXT")):
+                xpl.explode(mtext)
+        # convert TEXT into virtual LWPOLYLINES
+        virtual_polylines = []
+        for text in msp.query("TEXT"):
+            virtual_polylines.extend(text2path.virtual_entities(text, kind=text2path.Kind.LWPOLYLINES))
+        # explode closed virtual LWPOLYLINES into virtual LINE and ARC
+        primitives = ichain.from_iterable(
+            lwpoly.virtual_entities() for lwpoly in virtual_polylines
+        )
+        text_edges = list(edgesmith.edges_from_entities_2d(primitives))
         # build a list of layers containing valid entities
         entities_by_layer = groupby(
-            entities=msp.query('LINE SPLINE LWPOLYLINE POLYLINE ARC CIRCLE'),
+            entities=msp.query('LINE SPLINE LWPOLYLINE POLYLINE ARC CIRCLE TEXT'),
             dxfattrib='layer',
         )
         for layer in self.doc.layers:
@@ -218,6 +234,7 @@ class dxf2PlasmaC:
                 edge = edgesmith.make_edge_2d(entity)
                 if edge is not None:
                     edges.append(edge)
+            edges.extend(text_edges)
             # get all edge chains
             if edges:
                 deposit = edgeminer.Deposit(edges, gap_tol=self.gap_tolerance)
