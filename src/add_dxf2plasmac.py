@@ -64,7 +64,7 @@ if hasattr(self.w, 'main_tab_widget'):
         self.dxf_gui.D2P.small_hole = self.PREFS.getpref('Hole diameter', self.unitCode[2], float, 'CONVERSATIONAL')
         # widen these two as QtPlasmaC styles make the child widgets quite a bit larger than standard
         self.dxf_gui.sidebar_container.setFixedWidth(220)
-        self.dxf_gui.menu_width = 220
+        self.dxf_gui.menu_width = 190
         # set up the disabling hal pin
         # not sure why I added these after all the work to add the tab
         # but it makes the tab consistant with conversational

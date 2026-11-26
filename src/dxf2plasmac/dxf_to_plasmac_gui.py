@@ -663,7 +663,7 @@ class dxfGui(QFrame):
         menu.setWindowFlags(Qt.Dialog | Qt.FramelessWindowHint)
         menu.setWindowModality(Qt.ApplicationModal)
         menu.setFixedWidth(self.menu_width)
-        menu.setStyleSheet("QMenu{padding: 0px 0px} QMenu::item{padding: 8px 4px; margin: 0px}")
+        menu.setStyleSheet("QMenu{padding: 0px 0px; margin: 0px} QMenu::item{padding: 4px 4px; margin: 2px}")
         title_label = QLabel(title)
         title_label.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
         title_action = QWidgetAction(menu)
@@ -674,8 +674,6 @@ class dxfGui(QFrame):
             if opt:
                 action = QAction(opt, self)
                 action.triggered.connect(lambda checked=False, a=opt: answer(a))
-                if opt == 'Cancel':
-                    menu.addSeparator()
                 menu.addAction(action)
         menu.exec_(position)
         return option
