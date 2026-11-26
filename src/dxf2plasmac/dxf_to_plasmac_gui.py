@@ -65,7 +65,7 @@ TAG_COLOR    = 5
 def get_asset_path(relative_path: str) -> str:
     ''' resolves paths for local pixi development and compiled pyinstaller bundles '''
     try:
-        base_path = sys._MEIPASS
+        base_path = getattr(sys, '_MEIPASS', os.path.abspath("."))
     except AttributeError:
         base_path = os.path.dirname(os.path.abspath(__file__))
     return os.path.join(base_path, relative_path)

@@ -9,10 +9,10 @@ version = "0.1.0"
 
 [dependencies]
 python = "3.11.2.*"
-typing_extensions = ">=4.16.0,<5"
-pyqt = ">=5.15,<6"
-ezdxf = ">=1.4"
+pyqt = "5.15.9.*"
+numpy = "1.24.2.*"
+shapely = "2.0.7.*"
 
 [pypi-dependencies]
-shapely = ">=2.0, <2.2"
+ezdxf = "==1.4.0"
 pyqt5-stubs = ">=5.15.6.0, <6"

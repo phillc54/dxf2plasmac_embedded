@@ -1,0 +1,10 @@
+[tool.pyright]
+reportAttributeAccessIssue = false
+reportMissingParameterType = false
+reportUnannotatedClassAttribute = false
+reportUnknownArgumentType = false
+reportUnknownLambdaType = false
+reportUnknownMemberType = false
+reportUnknownParameterType = false
+reportUnknownVariableType = false
+reportUnusedCallResult = false
