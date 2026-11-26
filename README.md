@@ -9,13 +9,14 @@ Edit the existing inifile by adding the following to the [DISPLAY] section:
 
 Note: If you have an existing USER_COMMAND_FILE then you will need to copy the code from add_dxf2plasmac.py into the existing file.
 
-There are two python libraries required, ezdxf and shapely.
-
-Bookworm requires these from PyPi as the debian packages are too old.
+There are two python libraries required, ezdxf and shapely, these can be installed as follows:
 
     pip3 install ezdxf==1.4.0 --break-system-packages
     pip3 install shapely==2.0.7 --break-system-packages --no-deps
 
-Trixie can use the debian packages (NOTE: untested as of uploading this repo)
+These version are not the latest but are used to keep compatibility with Debian Bookworm.
 
-    sudo apt install python3-ezdxf python3-shapely
+If you are using Debian Trixie then you could use the versions that install via apt but you will not be able to share saved projects with a Bookworm installation.
+
+    sudo apt install python3-ezdxf
+    sudo apt install python3-shapely

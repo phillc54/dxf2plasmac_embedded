@@ -53,18 +53,21 @@ class MainWindow(QMainWindow):
 #  click the button to hide dxf2plasmac
 #  click the empty window to restore dxf2plasmac
 #
-#         icon = self.style().standardIcon(QStyle.SP_DialogCancelButton)
-#         b = QToolButton()
-#         b.setText('B')
-#         b.setFixedSize(32, 32)
-#         b.setIcon(icon)
-#         b.setIconSize(QSize(28, 28))
-#         b.clicked.connect(self.example)
-#         self.dxf_gui.toolbar.insertWidget(10, b)
-#         self.dxf_gui.toolbar.insertSpacing(11, 24)
-#
-#     def example(self):
+        icon = self.style().standardIcon(QStyle.SP_DialogCancelButton)
+        b = QToolButton()
+        # b.setText('B')
+        b.setFixedSize(32, 32)
+        b.setIcon(icon)
+        b.setIconSize(QSize(28, 28))
+        b.clicked.connect(self.example)
+        # self.dxf_gui.toolbar.insertWidget(10, b)
+        # self.dxf_gui.toolbar.insertSpacing(11, 24)
+        self.dxf_gui.toolbar.addStretch()
+        self.dxf_gui.toolbar.addWidget(b)
+
+    def example(self):
 #         self.dxf_gui.hide()
+        self.quit()
 #
 #     @override
 #     def mousePressEvent(self, a0):
