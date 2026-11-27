@@ -37,7 +37,7 @@ class MainWindow(QMainWindow):
         self.dxf_gui.D2P.precision = 2
         self.dxf_gui.D2P.small_hole = 32
         self.dxf_gui.load_material_file('test/test_material.cfg')
-        self.dxf_gui.sidebar_container.setFixedWidth(190)
+        self.dxf_gui.sidebar_container.setFixedWidth(160)
         self.dxf_gui.menu_width = 160
 
 # example ***********************************
@@ -69,6 +69,51 @@ class MainWindow(QMainWindow):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+    app.setStyleSheet("""
+        QWidget {
+            background-color: #A9A9A9
+        }
+
+        QGraphicsView {
+            background-color: #808080;
+        }
+
+        QCheckBox::indicator {
+            background-color: #800000;
+            border-radius: 4px;
+        }
+        QCheckBox::indicator:checked {
+            background-color: #008000;
+        }
+
+        QGroupBox {
+            border: 0px;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        QGroupBox::title {
+            padding-top: -36px;
+        }
+
+        QDoubleSpinBox {
+            border: 1px solid #808080;
+            border-radius: 4px;
+            padding: 2px;
+            qproperty-alignment: AlignRight;
+        }
+        QDoubleSpinBox::up-button, QDoubleSpinBox::down-button {
+            width: 0;
+            height: 0;
+            border: 0;
+        }
+
+        QMenu::item:selected {
+            background-color: #808080;
+/*            color: #ffffff;*/
+        }
+
+
+    """)
     window = MainWindow()
     window.show()
     sys.exit(app.exec_())
