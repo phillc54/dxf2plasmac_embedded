@@ -2,3 +2,5 @@ __pycache__/
 .pixi/
 pixi.lock
 .gitattributes
+*.d2p
+*.ngc

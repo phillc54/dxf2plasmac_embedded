@@ -30,15 +30,16 @@ if hasattr(self.w, 'main_tab_widget'):
     # dependencies satistied so continue
     if ezdxf and shapely:
         # import the handlerfile to get access to the base classes
-        import qtplasmac_handler as HANDLER
         # import hal for hal pin creation
+        import qtplasmac_handler as HANDLER
         from qtplasmac_handler import hal as HAL
-        # import dxf2plasmac
-        from dxf2plasmac.dxf_to_plasmac_gui import dxfGui
+
+        # import import the base gui file
+        from dxf2plasmac.dxf2plasmac_qt5 import DXFGUI
         # units needed to instantiate dxf2plasmac
         units = 'imperial' if self.units in ['in', 'inch'] else 'metric'
         # instantiate dxf2plasmac with units and icon color
-        self.dxf_gui = dxfGui(units, '#ffee06')
+        self.dxf_gui = DXFGUI(units, '#ffee06')
         # insert tab at index #2 containing dxf2plasmac
         self.w.main_tab_widget.insertTab(2, self.dxf_gui, 'DXF CONVERTER')
         # redo main_tab_widget tab indexes

@@ -23,7 +23,7 @@ VERSION = '0.1.0'
 epsilon = 1e-6
 join_style = BufferJoinStyle.round # round, mitre, or bevel
 
-class dxf2PlasmaC:
+class DXF2Plasmac:
     def __init__(self, units='metric'):
         self.units = units
         self.paths = {}
@@ -591,7 +591,7 @@ class dxf2PlasmaC:
                     'G92.1 ; cancel G92 offsets\n'
                     'G94 ; feed rate = units per minute\n'
                     'G97 ; spindle mode = rpm')
-        gcode =     [f'; {Path(gcode_file).name} by dxf2PlasmaC']
+        gcode =     [f'; {Path(gcode_file).name} by dxf2plasmac']
         gcode.append(f'; {str(datetime.now()).rsplit(":", 1)[0]}')
         gcode.append('')
         gcode.append('; configure a temporary material')

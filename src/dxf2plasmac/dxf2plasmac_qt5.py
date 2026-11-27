@@ -52,9 +52,8 @@ from PyQt5.QtWidgets import (
 )
 from typing_extensions import override
 
-from .dxf_to_plasmac import dxf2PlasmaC
+from . import dxf2plasmac
 
-VERSION = '0.0.1'
 TAG_LAYER    = 0
 TAG_MODE     = 1
 TAG_SEQUENCE = 2
@@ -221,7 +220,7 @@ class OutlineCutPath(OutlinePath):
             super().hoverLeaveEvent(event)
 
 
-class dxfGui(QFrame):
+class DXFGUI(QFrame):
     def __init__(self, units='metric', icon_color='#000000'):
         super().__init__()
         self.scene = QGraphicsScene(-5000, -5000, 10000, 10000)
@@ -233,16 +232,16 @@ class dxfGui(QFrame):
         self.gcode_file = ''
         self.selected_item = ''
         self.cross_marker = None
-        self.shape_color = Qt.black
-        self.rapid_color = Qt.darkGray
-        self.leadin_color = Qt.blue
-        self.cut_color_external  = Qt.red
-        self.cut_color_internal = Qt.green
-        self.invalid_color  = Qt.magenta
-        self.cross_marker_color = Qt.red
+        self.shape_color = '#606060'
+        self.rapid_color = '#B0B0B0'
+        self.leadin_color = '#0000B0'
+        self.cut_color_external = '#B00000'
+        self.cut_color_internal = '#00B000'
+        self.invalid_color  = '#FF00FF'
+        self.cross_marker_color = '#FF0000'
         self.icon_color = icon_color
         self.menu_width = 120
-        self.D2P = dxf2PlasmaC(units)
+        self.D2P = dxf2plasmac.DXF2Plasmac(units)
         self._setup_ui()
 
     def import_dxf(self):
@@ -336,8 +335,8 @@ class dxfGui(QFrame):
             self.error_check()
 
     def show_about(self):
-        title = f'dxf2PlasmaC\n\nVersion: {VERSION}'
-        message = ('A basic converter from dxf to QtPlasmaC G-code'
+        title = f'dxf2plasmac\n\nVersion: {dxf2plasmac.VERSION}'
+        message = ('A basic converter from DXF to QtPlasmaC G-code'
                    '\n'
                    '\nPortions of this software utilize the following:'
                    '\nLucide Icons <https://lucide.dev>'
@@ -409,11 +408,12 @@ class dxfGui(QFrame):
                     x2 = line['end'][0]
                     y2 = line['end'][1] * -1
                     color = (QColor(self.shape_color) if mode == 'shape' else
-                             self.rapid_color if segment == 0 else
-                             self.leadin_color if segment == 1 else
-                             self.cut_color_external if self.D2P.sequences[layer]['external'][point] else
-                             self.invalid_color if not self.D2P.sequences[layer]['lead-in'][point]['valid'] else
-                             self.cut_color_internal)
+                             QColor(self.rapid_color) if segment == 0 else
+                             QColor(self.leadin_color) if segment == 1 else
+                             QColor(self.cut_color_external) if self.D2P.sequences[layer]['external'][point] else
+                             QColor(self.invalid_color) if not self.D2P.sequences[layer]['lead-in'][point]['valid'] else
+                             QColor(self.cut_color_internal)
+                    )
                     seg_type = 'rapid' if segment == 0 else 'lead-in' if segment == 1 else 'feed' if mode == 'cut' else 'shape'
                     pen = QPen(color, 2)
                     pen.setCosmetic(True)
@@ -505,10 +505,10 @@ class dxfGui(QFrame):
         else:
             self.D2P.ignored.append(layer)
 
-    def create_cross_marker(self, color=Qt.red):
+    def create_cross_marker(self, color='#FF0000'):
         ''' create a marker cross '''
         size = self.D2P.size[0] / 40
-        pen = QPen(color, 2)
+        pen = QPen(QColor(color), 2)
         pen.setCosmetic(True)
         cross_path = QPainterPath()
         cross_path.moveTo(-size, -size)

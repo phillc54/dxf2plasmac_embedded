@@ -1,11 +1,11 @@
 [
   {
-    "label": "Start Python Script",
+    "label": "Run Current Script",
     "command": "pixi run python3 -m ${ZED_STEM}",
     "save" : "current"
   },
   {
-    "label": "Start Main",
+    "label": "Run Main",
     "command": "pixi run python3 -m standalone",
     "save" : "current"
   }

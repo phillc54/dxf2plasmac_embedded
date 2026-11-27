@@ -13,21 +13,20 @@ from PyQt5.QtWidgets import (
     QWidget,
 )
 
-from src.dxf2plasmac.dxf_to_plasmac_gui import dxfGui
+from src.dxf2plasmac.dxf2plasmac_qt5 import DXFGUI
 
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle('dxf2QtPlasmaC')
+        self.setWindowTitle('dxf2plasmac')
         self.resize(1000, 650)
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
         self.layout = QVBoxLayout(central_widget)
         self.layout.setContentsMargins(0, 0, 0, 0)
         self.layout.setSpacing(0)
-
-        self.dxf_gui = dxfGui('metric', '#004080')
+        self.dxf_gui = DXFGUI('metric')
         self.layout.addWidget(self.dxf_gui)
         self.dxf_gui.D2P.lead_type = 'arc'
         self.dxf_gui.D2P.lead_length = 3.0
@@ -37,13 +36,6 @@ class MainWindow(QMainWindow):
         self.dxf_gui.D2P.lead_angle = 45
         self.dxf_gui.D2P.precision = 2
         self.dxf_gui.D2P.small_hole = 32
-        self.dxf_gui.shape_color = Qt.darkYellow#'#808080'#Qt.black
-        self.dxf_gui.rapid_color = Qt.gray
-        self.dxf_gui.leadin_color = Qt.cyan
-        self.dxf_gui.cut_color_external = Qt.red
-        self.dxf_gui.cut_color_internal = Qt.green
-        self.dxf_gui.invalid_color  = Qt.magenta
-        self.dxf_gui.cross_marker_color = Qt.red
         self.dxf_gui.load_material_file('test/test_material.cfg')
         self.dxf_gui.sidebar_container.setFixedWidth(190)
         self.dxf_gui.menu_width = 160
